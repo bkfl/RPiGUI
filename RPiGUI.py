@@ -1,51 +1,48 @@
 from tkinter import *
-from tkinter import messagebox
+import tkinter.font
 from gpiozero import LED
 import RPi.GPIO
 
 RPi.GPIO.setmode(RPi.GPIO.BCM)
 
-# OUTPUTS
-led = LED(21)
+# Outputs
+ledRed = LED(16)
+ledGreen = LED(20)
+ledBlue = LED(21)
 
 # GUI
-root = Tk()
-root.title("RPi: Morse Code")
+win = Tk()
+win.title("RPi: Making a GUI")
 
-# EVENT FUNCTIONS
-def blink():
-    input = eInput.get()
-    # Check input is between 1 and 12 characters
-    if (1 < len(input) < 13):
-        # Check string contains letters only
-        if (input.isalpha()):
-            
-        else:
-            messagebox.showinfo("Error", "Input must contain only letters.")
-    else:
-        messagebox.showinfo("Error", "Input must be 1 to 12 characters.")
-
+# Functions
+def switchLed():
+    if rbVal.get() == "red":
+        ledRed.on()
+        ledGreen.off()
+        ledBlue.off()
+    elif rbVal.get() == "green":
+        ledRed.off()
+        ledGreen.on()
+        ledBlue.off()
+    elif rbVal.get() == "blue":
+        ledRed.off()
+        ledGreen.off()
+        ledBlue.on()
+        
 def close():
     RPi.GPIO.cleanup()
-    root.destroy()
-
-# FUNCTIONS
-def morseDot():
+    win.destroy()
     
-def morseDash():
+# Widgets
+rbVal = StringVar()
+rbRed = Radiobutton(win, command = switchLed, text = "Red", value = "red", variable = rbVal, width = 10)
+rbRed.grid(row=0, column=0)
+rbGreen = Radiobutton(win, command = switchLed, text = "Green", value = "green", variable = rbVal, width = 10)
+rbGreen.grid(row=0, column=1)
+rbBlue = Radiobutton(win, command = switchLed, text = "Blue", value = "blue", variable = rbVal, width = 10)
+rbBlue.grid(row=0, column=2)
+btnExit = Button(win, command = close, text = "Exit", width = 15)
+btnExit.grid(row=1, columnspan=3)
 
-def morseCharRest():
-    
-
-def morseBlink(char):
-
-
-# WIDGETS
-lbl1 = Label(root, text="Enter a word (12 char max):")
-lbl1.pack()
-eInput = Entry(root)
-eInput.pack()
-btnBlink = Button(root, text="Blink It!", command=blink)
-btnBlink.pack()
-btnClose = Button(root, text="Close", command=close)
-btnClose.pack()
+# init
+rbRed.invoke()
